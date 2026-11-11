@@ -1,257 +1,1303 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Calculadora de Valores — Vercetti</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-<style>
-:root{--bg:#050505;--elev:#0d0d0d;--card:#0e0e0e;--input:#0a0a0a;--border:#2e2e2e;--soft:#1e1e1e;--hi:#fff;--accent:#ff1f2d;--silver:#bdbdbd;--muted:#8c8c8c;--glow:0 0 24px rgba(255,31,45,.25)}
-*{box-sizing:border-box}
-html,body{margin:0;background:radial-gradient(ellipse at 50% -10%,#1a1a1a 0%,var(--bg) 55%);color:#fff;font-family:'Oswald',sans-serif;-webkit-font-smoothing:antialiased}
-:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-.wrap{max-width:980px;margin:0 auto;padding:30px 20px 60px}
-.header{text-align:center;padding-bottom:20px;margin-bottom:22px;border-bottom:1px solid var(--soft)}
-.eyebrow{font:11px 'JetBrains Mono',monospace;letter-spacing:4px;color:var(--muted);text-transform:uppercase;margin-bottom:10px}
-.title{font-family:'Bebas Neue',sans-serif;font-size:clamp(38px,8vw,64px);letter-spacing:3px;line-height:1;margin:0;text-shadow:0 0 18px rgba(255,31,45,.35)}
-.title .v{color:var(--accent);font-size:1.3em;text-shadow:0 0 22px rgba(255,31,45,.9)}
-.tabs{display:flex;justify-content:center;gap:0;margin:0 auto 24px;width:max-content;max-width:100%;border:1px solid var(--border);border-radius:4px;overflow:hidden;background:var(--input)}
-.tabs button{font:13px 'JetBrains Mono',monospace;letter-spacing:2px;text-transform:uppercase;padding:12px 24px;background:transparent;color:var(--muted);border:0;cursor:pointer}
-.tabs button.active{background:#f2f2f2;color:#000}
-.hidden{display:none!important}
-.grid{display:grid;grid-template-columns:1.35fr 1fr;gap:24px;align-items:start}
-@media(max-width:800px){.grid{grid-template-columns:1fr}}
-.card{background:var(--card);border:1px solid var(--border);border-radius:6px;box-shadow:var(--glow),inset 0 0 40px rgba(0,0,0,.4);padding:22px}
-.card-title{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;margin:0 0 16px;display:flex;align-items:center;gap:10px}
-.card-title::before{content:'';width:6px;height:18px;background:#fff;box-shadow:0 0 8px var(--accent)}
-label{display:block;font:11px 'JetBrains Mono',monospace;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
-input[type=text]{width:100%;background:var(--input);border:1px solid var(--border);color:#fff;font:16px 'Oswald',sans-serif;padding:11px 12px;border-radius:4px;outline:0}
-input:focus{border-color:#fff;box-shadow:0 0 0 3px rgba(255,31,45,.15)}
-input::placeholder{color:#555}
-.btn{background:#f2f2f2;color:#000;border:1px solid #fff;font:12px 'JetBrains Mono',monospace;letter-spacing:1px;text-transform:uppercase;padding:11px 16px;border-radius:4px;cursor:pointer;white-space:nowrap}
-.btn:hover{background:#fff}
-.btn.ghost{background:transparent;color:var(--silver);border-color:var(--border)}
-.btn.ghost:hover{color:#fff;border-color:var(--silver)}
-.row2{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:end;margin-bottom:14px}
-.faccao-fixed{font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:2px}
-.pill{font:10px 'JetBrains Mono',monospace;letter-spacing:1px;text-transform:uppercase;padding:4px 8px;border:1px solid rgba(255,255,255,.5);border-radius:3px;margin-left:8px;vertical-align:middle}
-.item-row{display:grid;grid-template-columns:40px 1fr 90px 130px;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--soft)}
-.item-row:last-child{border-bottom:0}
-.item-row.head{font:10px 'JetBrains Mono',monospace;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)}
-.badge{width:34px;height:34px;border:1px solid var(--border);border-radius:4px;background:linear-gradient(160deg,#1f1f1f,#0e0e0e);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:13px}
-.item-price{font:13px 'JetBrains Mono',monospace;color:var(--silver);text-align:right}
-.qty-input{width:100%;background:var(--input);border:1px solid var(--border);color:#fff;font:15px 'JetBrains Mono',monospace;text-align:center;padding:8px 4px;border-radius:4px;outline:0;-moz-appearance:textfield}
-.qty-input::-webkit-outer-spin-button,.qty-input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
-.pin{position:relative}.pin::before{content:'R$';position:absolute;left:8px;top:50%;transform:translateY(-50%);font:12px 'JetBrains Mono',monospace;color:var(--muted)}.pin input{width:100%;background:var(--input);border:1px solid var(--border);color:#fff;font:13px 'JetBrains Mono',monospace;padding:8px 6px 8px 26px;border-radius:4px;outline:0;text-align:right}.comm{margin-top:14px;padding:12px 14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.35);border-radius:4px;font:11.5px 'JetBrains Mono',monospace;color:var(--muted);display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
-.comm div{display:flex;flex-direction:column;gap:4px}.comm b{font-size:16px;color:#fff}
-.note{margin-top:16px;font:11px/1.7 'JetBrains Mono',monospace;color:var(--muted);border-top:1px dashed var(--border);padding-top:14px}
-.receipt{background:repeating-linear-gradient(0deg,transparent,transparent 27px,rgba(255,255,255,.03) 28px),var(--elev);position:relative;overflow:hidden}
-.rlabel{font:10px 'JetBrains Mono',monospace;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin-bottom:16px;display:flex;justify-content:space-between}
-.rline{display:flex;gap:10px;font:13.5px/1.9 'JetBrains Mono',monospace}
-.rline .dot{color:#fff;flex-shrink:0}.rline .k{color:var(--muted)}.rline .v{font-weight:600}
-.rline.deposit .v{font-size:15px;text-shadow:0 0 10px rgba(255,31,45,.4)}
-.stamp{position:absolute;top:18px;right:-8px;width:108px;height:108px;border:3px solid var(--accent);border-radius:50%;color:var(--accent);display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:2px;transform:rotate(14deg);opacity:0;transition:opacity .35s;pointer-events:none}
-.stamp.show{opacity:.85}
-.copy{margin-top:20px;width:100%;padding:13px;font-size:13px;letter-spacing:2px}
-.copy.copied{background:#8c8c8c;border-color:#8c8c8c}
-.empty{color:var(--muted);font:italic 12.5px 'JetBrains Mono',monospace}
-.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:14px;margin-top:16px}
-.pcard{position:relative;background:var(--input);border:1px solid var(--border);border-radius:6px;padding:22px 16px;cursor:pointer;text-align:left;color:#fff;font-family:inherit;transition:border-color .15s,box-shadow .15s,transform .15s}
-.pcard:hover,.pcard:focus-visible{border-color:#fff;box-shadow:var(--glow);transform:translateY(-2px);outline:0}
-.pcard .nm{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;display:block;margin-bottom:6px;padding-right:22px;word-break:break-word}
-.pcard .sub{font:10px 'JetBrains Mono',monospace;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase}
-.pcard .x{position:absolute;top:8px;right:8px;background:transparent;border:1px solid transparent;color:var(--muted);font-size:14px;width:26px;height:26px;border-radius:3px;cursor:pointer}
-.pcard .x:hover{color:var(--accent);border-color:var(--accent)}
-.add-row{display:grid;grid-template-columns:1fr auto;gap:10px;margin-bottom:10px}
-@media(max-width:640px){.item-row{grid-template-columns:36px 1fr 70px 112px;gap:8px}}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#050505">
+  <title>Calculadora de Valores — Vercetti</title>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap"
+    rel="stylesheet"
+  >
+
+  <style>
+    :root {
+      --bg: #050505;
+      --elev: #0d0d0d;
+      --card: #0e0e0e;
+      --input: #0a0a0a;
+      --border: #2e2e2e;
+      --soft: #1e1e1e;
+      --accent: #ff1f2d;
+      --silver: #bdbdbd;
+      --muted: #8c8c8c;
+      --glow: 0 0 24px rgba(255, 31, 45, 0.25);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      min-height: 100%;
+      margin: 0;
+      background:
+        radial-gradient(ellipse at 50% -10%, #1a1a1a 0%, var(--bg) 55%);
+      color: #fff;
+      font-family: "Oswald", sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      padding-top: env(safe-area-inset-top, 0);
+      padding-bottom: env(safe-area-inset-bottom, 0);
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .wrap {
+      width: 100%;
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 30px 20px 60px;
+    }
+
+    /* CABEÇALHO */
+    .header {
+      margin-bottom: 22px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--soft);
+      text-align: center;
+    }
+
+    .eyebrow {
+      margin-bottom: 10px;
+      color: var(--muted);
+      font: 11px "JetBrains Mono", monospace;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+    }
+
+    .title {
+      margin: 0;
+      font-family: "Bebas Neue", sans-serif;
+      font-size: clamp(38px, 8vw, 64px);
+      letter-spacing: 3px;
+      line-height: 1;
+      text-shadow: 0 0 18px rgba(255, 31, 45, 0.35);
+    }
+
+    .title .v {
+      color: var(--accent);
+      font-size: 1.3em;
+      text-shadow: 0 0 22px rgba(255, 31, 45, 0.9);
+    }
+
+    /* ABAS */
+    .tabs {
+      display: flex;
+      width: max-content;
+      max-width: 100%;
+      margin: 0 auto 24px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      background: var(--input);
+    }
+
+    .tabs button {
+      padding: 12px 24px;
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font: 13px "JetBrains Mono", monospace;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .tabs button.active {
+      background: #f2f2f2;
+      color: #000;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* ESTRUTURA DOS PAINÉIS */
+    .grid {
+      display: grid;
+      grid-template-columns: 1.35fr 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .card {
+      padding: 22px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--card);
+      box-shadow:
+        var(--glow),
+        inset 0 0 40px rgba(0, 0, 0, 0.4);
+    }
+
+    .card-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0 0 16px;
+      font-family: "Bebas Neue", sans-serif;
+      font-size: 22px;
+      letter-spacing: 2px;
+    }
+
+    .card-title::before {
+      width: 6px;
+      height: 18px;
+      background: #fff;
+      box-shadow: 0 0 8px var(--accent);
+      content: "";
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--muted);
+      font: 11px "JetBrains Mono", monospace;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 11px 12px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      outline: 0;
+      background: var(--input);
+      color: #fff;
+      font: 16px "Oswald", sans-serif;
+    }
+
+    input:focus {
+      border-color: #fff;
+      box-shadow: 0 0 0 3px rgba(255, 31, 45, 0.15);
+    }
+
+    input::placeholder {
+      color: #555;
+    }
+
+    /* BOTÕES */
+    .btn {
+      padding: 11px 16px;
+      border: 1px solid #fff;
+      border-radius: 4px;
+      background: #f2f2f2;
+      color: #000;
+      cursor: pointer;
+      font: 12px "JetBrains Mono", monospace;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .btn:hover {
+      background: #fff;
+    }
+
+    .btn.ghost {
+      border-color: var(--border);
+      background: transparent;
+      color: var(--silver);
+    }
+
+    .btn.ghost:hover {
+      border-color: var(--silver);
+      color: #fff;
+    }
+
+    /* CABEÇALHO DA CALCULADORA DE PARCERIA */
+    .row2 {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items: end;
+      margin-bottom: 14px;
+    }
+
+    .faccao-fixed {
+      font-family: "Bebas Neue", sans-serif;
+      font-size: 30px;
+      letter-spacing: 2px;
+    }
+
+    .pill {
+      display: inline-block;
+      margin-left: 8px;
+      padding: 4px 8px;
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      border-radius: 3px;
+      font: 10px "JetBrains Mono", monospace;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      vertical-align: middle;
+    }
+
+    /* LISTA DE PRODUTOS */
+    .item-row {
+      display: grid;
+      grid-template-columns: 40px 1fr 90px 130px;
+      gap: 12px;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--soft);
+    }
+
+    .item-row:last-child {
+      border-bottom: 0;
+    }
+
+    .item-row.head {
+      color: var(--muted);
+      font: 10px "JetBrains Mono", monospace;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    .badge {
+      display: flex;
+      width: 34px;
+      height: 34px;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      background: linear-gradient(160deg, #1f1f1f, #0e0e0e);
+      font-family: "Bebas Neue", sans-serif;
+      font-size: 13px;
+    }
+
+    .item-price {
+      color: var(--silver);
+      font: 13px "JetBrains Mono", monospace;
+      text-align: right;
+    }
+
+    .qty-input {
+      width: 100%;
+      padding: 8px 4px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      outline: 0;
+      background: var(--input);
+      color: #fff;
+      font: 15px "JetBrains Mono", monospace;
+      text-align: center;
+      -moz-appearance: textfield;
+    }
+
+    .qty-input::-webkit-outer-spin-button,
+    .qty-input::-webkit-inner-spin-button {
+      margin: 0;
+      -webkit-appearance: none;
+    }
+
+    /* PREÇOS EDITÁVEIS DAS PARCERIAS */
+    .pin {
+      position: relative;
+    }
+
+    .pin::before {
+      position: absolute;
+      top: 50%;
+      left: 8px;
+      color: var(--muted);
+      content: "R$";
+      font: 12px "JetBrains Mono", monospace;
+      transform: translateY(-50%);
+    }
+
+    .pin input {
+      width: 100%;
+      padding: 8px 6px 8px 26px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      outline: 0;
+      background: var(--input);
+      color: #fff;
+      font: 13px "JetBrains Mono", monospace;
+      text-align: right;
+    }
+
+    /* DIVISÃO DOS VALORES */
+    .comm {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 14px;
+      margin-top: 14px;
+      padding: 12px 14px;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--muted);
+      font: 11.5px "JetBrains Mono", monospace;
+    }
+
+    .comm div {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .comm b {
+      color: #fff;
+      font-size: 16px;
+    }
+
+    .note {
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px dashed var(--border);
+      color: var(--muted);
+      font: 11px/1.7 "JetBrains Mono", monospace;
+    }
+
+    /* COMPROVANTE */
+    .receipt {
+      position: relative;
+      overflow: hidden;
+      background:
+        repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 27px,
+          rgba(255, 255, 255, 0.03) 28px
+        ),
+        var(--elev);
+    }
+
+    .rlabel {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      color: var(--muted);
+      font: 10px "JetBrains Mono", monospace;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+
+    .rline {
+      display: flex;
+      gap: 10px;
+      font: 13.5px/1.9 "JetBrains Mono", monospace;
+    }
+
+    .rline .dot {
+      flex-shrink: 0;
+      color: #fff;
+    }
+
+    .rline .k {
+      color: var(--muted);
+    }
+
+    .rline .v {
+      font-weight: 600;
+    }
+
+    .rline.deposit .v {
+      font-size: 15px;
+      text-shadow: 0 0 10px rgba(255, 31, 45, 0.4);
+    }
+
+    .stamp {
+      position: absolute;
+      top: 18px;
+      right: -8px;
+      display: flex;
+      width: 108px;
+      height: 108px;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border: 3px solid var(--accent);
+      border-radius: 50%;
+      color: var(--accent);
+      font-family: "Bebas Neue", sans-serif;
+      font-size: 15px;
+      letter-spacing: 2px;
+      opacity: 0;
+      pointer-events: none;
+      transform: rotate(14deg);
+      transition: opacity 0.35s;
+    }
+
+    .stamp.show {
+      opacity: 0.85;
+    }
+
+    .copy {
+      width: 100%;
+      margin-top: 20px;
+      padding: 13px;
+      font-size: 13px;
+      letter-spacing: 2px;
+    }
+
+    .copy.copied {
+      border-color: #8c8c8c;
+      background: #8c8c8c;
+    }
+
+    .empty {
+      color: var(--muted);
+      font: italic 12.5px "JetBrains Mono", monospace;
+    }
+
+    /* CARDS DAS PARCERIAS */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+      gap: 14px;
+      margin-top: 16px;
+    }
+
+    .pcard {
+      position: relative;
+      padding: 22px 16px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--input);
+      color: #fff;
+      cursor: pointer;
+      font-family: inherit;
+      text-align: left;
+      transition:
+        border-color 0.15s,
+        box-shadow 0.15s,
+        transform 0.15s;
+    }
+
+    .pcard:hover,
+    .pcard:focus-visible {
+      outline: 0;
+      border-color: #fff;
+      box-shadow: var(--glow);
+      transform: translateY(-2px);
+    }
+
+    .pcard .nm {
+      display: block;
+      margin-bottom: 6px;
+      padding-right: 22px;
+      font-family: "Bebas Neue", sans-serif;
+      font-size: 28px;
+      letter-spacing: 2px;
+      overflow-wrap: anywhere;
+    }
+
+    .pcard .sub {
+      color: var(--muted);
+      font: 10px "JetBrains Mono", monospace;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    /* RESPONSIVIDADE */
+    @media (max-width: 800px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .wrap {
+        padding: 24px 14px 40px;
+      }
+
+      .card {
+        padding: 17px;
+      }
+
+      .item-row {
+        grid-template-columns: 36px minmax(70px, 1fr) 62px 105px;
+        gap: 7px;
+      }
+
+      .item-row.head {
+        font-size: 9px;
+      }
+
+      .faccao-fixed {
+        font-size: 25px;
+      }
+
+      .tabs button {
+        padding: 11px 16px;
+        font-size: 11px;
+      }
+    }
+
+    @media (max-width: 380px) {
+      .item-row {
+        grid-template-columns: 30px minmax(62px, 1fr) 54px 94px;
+        gap: 5px;
+      }
+
+      .badge {
+        width: 28px;
+        height: 30px;
+        font-size: 11px;
+      }
+
+      .qty-input {
+        font-size: 12px;
+      }
+
+      .pin input {
+        padding-left: 23px;
+        font-size: 11px;
+      }
+    }
+  </style>
 </head>
+
 <body>
-<div class="wrap">
-  <div class="header">
-    <div class="eyebrow">Facção · Ledger de Operações</div>
-    <h1 class="title">TABELA DE VALORES — <span class="v">V</span>ERCETTI</h1>
-  </div>
+  <main class="wrap">
 
-  <div class="tabs">
-    <button type="button" id="tab-calc" class="active">Calculadora</button>
-    <button type="button" id="tab-parc">Parcerias</button>
-  </div>
+    <!-- CABEÇALHO -->
+    <header class="header">
+      <div class="eyebrow">Facção · Ledger de Operações</div>
 
-  <!-- Aba parcerias: cards -->
-  <div id="view-parc" class="card hidden">
-    <div class="card-title">Parcerias</div>
-    <input type="text" id="cad-search" placeholder="🔍 Pesquisar parceria...">
-    <div class="cards" id="cards"></div>
-  </div>
+      <h1 class="title">
+        TABELA DE VALORES —
+        <span class="v">V</span>ERCETTI
+      </h1>
+    </header>
 
-  <!-- Calculadora (normal e de parceria) -->
-  <div class="grid" id="view-calc">
-    <div class="card">
-      <div id="head-normal">
-        <label for="faccao">Facção (comprovante)</label>
-        <input type="text" id="faccao" placeholder="Digite o nome da facção" style="margin-bottom:20px">
-      </div>
-      <div id="head-parc" class="hidden row2">
-        <div>
-          <label>Calculadora de compra · parceria</label>
-          <div class="faccao-fixed"><span id="parc-name"></span><span class="pill">Tabela deles</span></div>
+    <!-- NAVEGAÇÃO -->
+    <nav class="tabs" aria-label="Navegação principal">
+      <button type="button" id="tab-calc" class="active">
+        Calculadora
+      </button>
+
+      <button type="button" id="tab-parc">
+        Parcerias
+      </button>
+    </nav>
+
+    <!-- TELA DE PARCERIAS -->
+    <section id="view-parc" class="card hidden">
+      <h2 class="card-title">Parcerias</h2>
+
+      <input
+        type="text"
+        id="cad-search"
+        placeholder="🔍 Pesquisar parceria..."
+        aria-label="Pesquisar parceria"
+      >
+
+      <div class="cards" id="cards"></div>
+    </section>
+
+    <!-- TELA DA CALCULADORA -->
+    <section class="grid" id="view-calc">
+
+      <!-- PAINEL DOS PRODUTOS -->
+      <div class="card">
+
+        <!-- CALCULADORA NORMAL -->
+        <div id="head-normal">
+          <label for="faccao">Facção (comprovante)</label>
+
+          <input
+            type="text"
+            id="faccao"
+            placeholder="Digite o nome da facção"
+            style="margin-bottom: 20px"
+          >
         </div>
-        <button class="btn ghost" id="back" type="button">← Voltar</button>
+
+        <!-- CALCULADORA DE PARCERIA -->
+        <div id="head-parc" class="hidden row2">
+          <div>
+            <label>Calculadora de compra · parceria</label>
+
+            <div class="faccao-fixed">
+              <span id="parc-name"></span>
+              <span class="pill">Tabela deles</span>
+            </div>
+          </div>
+
+          <button class="btn ghost" id="back" type="button">
+            ← Voltar
+          </button>
+        </div>
+
+        <h2 class="card-title">Itens</h2>
+
+        <div class="item-row head">
+          <div></div>
+          <div>Item</div>
+          <div style="text-align: center">Qtd</div>
+          <div style="text-align: right">Preço unit.</div>
+        </div>
+
+        <div id="item-list"></div>
+
+        <!-- DIVISÃO DE VALORES -->
+        <div class="comm hidden" id="comm">
+          <div>
+            <span>Total membro</span>
+            <b id="membro-val">R$ 0</b>
+          </div>
+
+          <div>
+            <span>Total painel</span>
+            <b id="painel-val">R$ 0</b>
+          </div>
+        </div>
+
+        <div class="note" id="note">
+          <b>Venda de produtos</b> — da venda, 30% fica com o membro que
+          vendeu e 70% vai para o painel da facção.
+        </div>
       </div>
 
-      <div class="card-title">Itens</div>
-      <div class="item-row head"><div></div><div>Item</div><div style="text-align:center">Qtd</div><div style="text-align:right">Preço unit.</div></div>
-      <div id="item-list"></div>
+      <!-- COMPROVANTE -->
+      <aside class="card receipt">
+        <div class="stamp" id="stamp">
+          <span>REGISTRO</span>
+          <span>APROVADO</span>
+        </div>
 
-      <div class="comm hidden" id="comm">
-        <div><span>Total membro</span><b id="membro-val">R$0</b></div>
-        <div><span>Total painel</span><b id="painel-val">R$0</b></div>
-      </div>
-      <div class="note" id="note"><b>Venda de produtos</b> — da venda, 30% fica com o membro que vendeu e 70% vai para o painel da facção.</div>
-    </div>
+        <div class="rlabel">
+          <span>Comprovante</span>
+          <span id="rtime"></span>
+        </div>
 
-    <div class="card receipt">
-      <div class="stamp" id="stamp"><span>REGISTRO</span><span>APROVADO</span></div>
-      <div class="rlabel"><span>Comprovante</span><span id="rtime"></span></div>
-      <div id="rbody"></div>
-      <button class="btn copy" id="copy-btn" type="button">Copiar comprovante</button>
-    </div>
-  </div>
-</div>
+        <div id="rbody"></div>
 
-<script>
-const PRECOS={
-  normal:{"Maconha":700,"Five":130000,"Tec-9":181000,"Remington":212000,"AKS":216000,"Glock Rajada":242400,"G36":358500},
-  parceria:{"Maconha":600,"Five":117000,"Tec-9":201000,"Remington":191000,"AKS":195000,"Glock Rajada":218000,"G36":322650}
-};
-let ITEMS;const BASE=Object.keys(PRECOS.normal).map(n=>({id:n.toLowerCase().replace(/[^a-z0-9]+/g,'-'),name:n,normal:PRECOS.normal[n],parceria:PRECOS.parceria[n]}));
-const DEFAULTS=['Sakura'];
-const KEY='vercetti-parcerias-v3';
-const state={mode:'normal',faccao:'',parcName:'',qty:{},parcerias:[],pr:{}};
-const $=id=>document.getElementById(id);
-const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const norm=s=>(s||'').toString().trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,' ');
-const brl=n=>'R$'+new Intl.NumberFormat('pt-BR',{maximumFractionDigits:0}).format(Math.round(n));
-const brl2=n=>'R$ '+new Intl.NumberFormat('pt-BR',{maximumFractionDigits:0}).format(Math.round(n));
-const TABELAS={sakura:[["Cocaína",600,700],["Munição Five-Seven",526,585],["Munição MTAR-21",702,780],["Munição TEC9",560,622],["Munição AKS",661,735]].map(([n,p,s])=>({id:norm(n).replace(/[^a-z0-9]+/g,'-'),name:n,parceria:p,normal:s}))};
-const resetQty=()=>{ITEMS.forEach(i=>state.qty[i.id]=0);document.querySelectorAll('.qty-input').forEach(q=>q.value=0)};
+        <button class="btn copy" id="copy-btn" type="button">
+          Copiar comprovante
+        </button>
+      </aside>
+    </section>
+  </main>
 
-function loadP(){
-  let list=null;
-  try{const r=localStorage.getItem(KEY);if(r)list=JSON.parse(r)}catch(e){}
-  if(!Array.isArray(list))list=DEFAULTS.slice();
-  if(!list.some(n=>norm(n)==='sakura'))list.unshift('Sakura');
-  state.parcerias=list;
-  try{state.pr=JSON.parse(localStorage.getItem(KEY+'-pr'))||{}}catch(e){state.pr={}}
-  renderCards();
-}
-function saveP(){try{localStorage.setItem(KEY,JSON.stringify(state.parcerias));localStorage.setItem(KEY+'-pr',JSON.stringify(state.pr))}catch(e){}}
+  <script>
+    /* =========================================================
+       1. CONFIGURAÇÕES E TABELAS DE PREÇOS
+    ========================================================= */
 
-/* itens */
-function buildItems(list){
-  ITEMS=list;$('item-list').innerHTML='';
-  ITEMS.forEach(i=>{
-  const r=document.createElement('div');r.className='item-row';
-  r.innerHTML=`<div class="badge">${esc(i.name.split(' ').map(w=>w[0]).join('').slice(0,3).toUpperCase())}</div><div>${esc(i.name)}</div><input class="qty-input" type="number" min="0" value="0" data-id="${i.id}" inputmode="numeric"><div><div class="item-price" id="p-${i.id}"></div><div class="pin hidden" id="pin-${i.id}"><input type="number" min="0" step="any" inputmode="decimal" data-pid="${i.id}"></div></div>`;
-  $('item-list').appendChild(r);
-});
-  resetQty();
-}
-$('item-list').addEventListener('input',e=>{
-  const t=e.target;
-  if(t.dataset.id){state.qty[t.dataset.id]=Math.max(0,parseInt(t.value||'0',10)||0);render()}
-  else if(t.dataset.pid){const k=norm(state.parcName);(state.pr[k]=state.pr[k]||{})[t.dataset.pid]=Math.max(0,parseFloat(t.value)||0);saveP();render()}
-});
+    const PRECOS = {
+      normal: {
+        "Maconha": 700,
+        "Five": 130000,
+        "Tec-9": 181000,
+        "Remington": 212000,
+        "AKS": 216000,
+        "Glock Rajada": 242400,
+        "G36": 358500
+      },
 
-$('faccao').addEventListener('input',e=>{state.faccao=e.target.value.trim();render()});
+      parceria: {
+        "Maconha": 600,
+        "Five": 117000,
+        "Tec-9": 201000,
+        "Remington": 191000,
+        "AKS": 195000,
+        "Glock Rajada": 218000,
+        "G36": 322650
+      }
+    };
 
-/* abas */
-function showView(v){
-  const parc=v==='parc';
-  $('view-parc').classList.toggle('hidden',!parc);
-  $('view-calc').classList.toggle('hidden',parc);
-  $('tab-calc').classList.toggle('active',!parc);
-  $('tab-parc').classList.toggle('active',parc);
-}
-$('tab-calc').onclick=()=>{state.mode='normal';buildItems(BASE);$('head-normal').classList.remove('hidden');$('head-parc').classList.add('hidden');resetQty();showView('calc');render()};
-$('tab-parc').onclick=()=>{state.mode='normal';showView('parc')};
-$('back').onclick=()=>{showView('parc')};
+    const BASE = Object.keys(PRECOS.normal).map((nome) => ({
+      id: nome.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
+      name: nome,
+      normal: PRECOS.normal[nome],
+      parceria: PRECOS.parceria[nome]
+    }));
 
-function openParc(name){
-  state.mode='parceria';state.parcName=name;buildItems(TABELAS[norm(name)]||BASE);
-  $('parc-name').textContent=name;
-  $('head-normal').classList.add('hidden');$('head-parc').classList.remove('hidden');
-  resetQty();showView('calc');
-  $('tab-calc').classList.remove('active');$('tab-parc').classList.add('active');
-  render();
-}
+    const TABELAS = {
+      sakura: [
+        ["Cocaína", 600, 700],
+        ["Munição Five-Seven", 526, 585],
+        ["Munição MTAR-21", 702, 780],
+        ["Munição TEC9", 560, 622],
+        ["Munição AKS", 661, 735]
+      ].map(([nome, parceria, normal]) => ({
+        id: normalizar(nome).replace(/[^a-z0-9]+/g, "-"),
+        name: nome,
+        parceria,
+        normal
+      }))
+    };
 
-/* cadastro de parcerias */
-$('cad-search').addEventListener('input',renderCards);
+    const DEFAULTS = ["Sakura"];
+    const STORAGE_KEY = "vercetti-parcerias-v3";
 
-function renderCards(){
-  const t=norm($('cad-search').value);
-  const list=state.parcerias.map((n,i)=>({n,i})).filter(o=>!t||norm(o.n).includes(t));
-  const box=$('cards');
-  if(!state.parcerias.length){box.innerHTML='<div class="empty">Nenhuma parceria cadastrada ainda.</div>';return}
-  if(!list.length){box.innerHTML='<div class="empty">Nenhuma parceria encontrada.</div>';return}
-  box.innerHTML=list.map(o=>`<div class="pcard" tabindex="0" role="button" data-open="${o.i}"><span class="nm">${esc(o.n)}</span><span class="sub">Abrir calculadora →</span></div>`).join('');
-  box.querySelectorAll('[data-open]').forEach(c=>{
-    const go=()=>openParc(state.parcerias[+c.dataset.open]);
-    c.addEventListener('click',go);
-    c.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target===c){e.preventDefault();go()}});
-  });
-  box.querySelectorAll('[data-rm]').forEach(b=>b.addEventListener('click',e=>{
-    e.stopPropagation();state.parcerias.splice(+b.dataset.rm,1);saveP();renderCards();
-  }));
-}
+    const state = {
+      mode: "normal",
+      faccao: "",
+      parcName: "",
+      qty: {},
+      parcerias: [],
+      pr: {}
+    };
 
-/* cálculo */
-const price=i=>{if(state.mode!=='parceria')return i.normal;const v=(state.pr[norm(state.parcName)]||{})[i.id];return v==null?i.parceria:v};
-function compute(){
-  const chosen=ITEMS.filter(i=>state.qty[i.id]>0);
-  const total=chosen.reduce((s,i)=>s+price(i)*state.qty[i.id],0);
-  return{chosen,total,membro:total*.3,painel:total*.7};
-}
-function lines(c){
-  const par=state.mode==='parceria';
-  const L=[['Facção:',(par?state.parcName:state.faccao)||'—',''],['Parceria:',par?'Sim':'Não','']];
-  L.push(['Produtos:',c.chosen.map(i=>`${state.qty[i.id]}x ${i.name}`).join(', '),'']);
-  L.push(['Valor total:',brl(c.total),par?'deposit':'']);
-  if(!par)L.push(['Repasse produtos:',`membro ${brl(c.membro)} · painel ${brl(c.painel)}`,'']);
-  if(!par)L.push(['Total membro / painel:',`${brl(c.membro)} / ${brl(c.painel)}`,'deposit']);
-  return L;
-}
-function render(){
-  const par=state.mode==='parceria';
-  ITEMS.forEach(i=>{
-    $('p-'+i.id).textContent=brl2(price(i));
-    $('p-'+i.id).classList.toggle('hidden',par);
-    const box=$('pin-'+i.id),inp=box.querySelector('input');
-    box.classList.toggle('hidden',!par);
-    if(par&&document.activeElement!==inp)inp.value=price(i);
-  });
-  $('note').classList.toggle('hidden',par);
-  const c=compute();
-  $('comm').classList.toggle('hidden',!c.chosen.length||par);
-  $('membro-val').textContent=brl(c.membro);$('painel-val').textContent=brl(c.painel);
-  if(!c.chosen.length){
-    $('rbody').innerHTML='<div class="empty">Informe a quantidade de itens para gerar o comprovante.</div>';
-    $('stamp').classList.remove('show');$('rtime').textContent='';return;
-  }
-  $('rbody').innerHTML=lines(c).map(([k,v,cl])=>`<div class="rline ${cl}"><span class="dot">●</span><span class="k">${esc(k)}</span><span class="v">${esc(v)}</span></div>`).join('');
-  $('stamp').classList.add('show');
-  $('rtime').textContent=new Date().toLocaleString('pt-BR',{hour:'2-digit',minute:'2-digit'});
-}
-$('copy-btn').onclick=()=>{
-  const c=compute();if(!c.chosen.length)return;
-  const text=lines(c).map(([k,v])=>`● ${k} ${v}`).join('\n');
-  const done=()=>{const b=$('copy-btn');b.textContent='Copiado ✓';b.classList.add('copied');setTimeout(()=>{b.textContent='Copiar comprovante';b.classList.remove('copied')},1600)};
-  try{navigator.clipboard.writeText(text).then(done)}catch(e){}
-};
+    let ITEMS = [];
 
-buildItems(BASE);loadP();render();
-</script>
+    /* =========================================================
+       2. FUNÇÕES AUXILIARES
+    ========================================================= */
+
+    const $ = (id) => document.getElementById(id);
+
+    function escaparHTML(valor) {
+      return String(valor).replace(/[&<>"']/g, (caractere) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      })[caractere]);
+    }
+
+    function normalizar(texto) {
+      return (texto || "")
+        .toString()
+        .trim()
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/\s+/g, " ");
+    }
+
+    function formatarBRL(valor) {
+      return "R$" + new Intl.NumberFormat("pt-BR", {
+        maximumFractionDigits: 0
+      }).format(Math.round(valor));
+    }
+
+    function formatarBRLComEspaco(valor) {
+      return "R$ " + new Intl.NumberFormat("pt-BR", {
+        maximumFractionDigits: 0
+      }).format(Math.round(valor));
+    }
+
+    function resetarQuantidades() {
+      ITEMS.forEach((item) => {
+        state.qty[item.id] = 0;
+      });
+
+      document.querySelectorAll(".qty-input").forEach((campo) => {
+        campo.value = 0;
+      });
+    }
+
+    /* =========================================================
+       3. SALVAMENTO E CARREGAMENTO DAS PARCERIAS
+    ========================================================= */
+
+    function carregarParcerias() {
+      let lista = null;
+
+      try {
+        const salva = localStorage.getItem(STORAGE_KEY);
+
+        if (salva) {
+          lista = JSON.parse(salva);
+        }
+      } catch (erro) {
+        console.warn("Não foi possível carregar as parcerias.", erro);
+      }
+
+      if (!Array.isArray(lista)) {
+        lista = DEFAULTS.slice();
+      }
+
+      if (!lista.some((nome) => normalizar(nome) === "sakura")) {
+        lista.unshift("Sakura");
+      }
+
+      state.parcerias = lista;
+
+      try {
+        state.pr = JSON.parse(
+          localStorage.getItem(STORAGE_KEY + "-pr")
+        ) || {};
+      } catch (erro) {
+        state.pr = {};
+      }
+
+      renderizarCards();
+    }
+
+    function salvarParcerias() {
+      try {
+        localStorage.setItem(
+          STORAGE_KEY,
+          JSON.stringify(state.parcerias)
+        );
+
+        localStorage.setItem(
+          STORAGE_KEY + "-pr",
+          JSON.stringify(state.pr)
+        );
+      } catch (erro) {
+        console.warn("Não foi possível salvar as parcerias.", erro);
+      }
+    }
+
+    /* =========================================================
+       4. MONTAGEM DA LISTA DE ITENS
+    ========================================================= */
+
+    function montarItens(lista) {
+      ITEMS = lista;
+      $("item-list").innerHTML = "";
+
+      ITEMS.forEach((item) => {
+        const iniciais = item.name
+          .split(" ")
+          .map((palavra) => palavra[0])
+          .join("")
+          .slice(0, 3)
+          .toUpperCase();
+
+        const linha = document.createElement("div");
+        linha.className = "item-row";
+
+        linha.innerHTML = `
+          <div class="badge">${escaparHTML(iniciais)}</div>
+
+          <div>${escaparHTML(item.name)}</div>
+
+          <input
+            class="qty-input"
+            type="number"
+            min="0"
+            step="1"
+            value="0"
+            data-id="${escaparHTML(item.id)}"
+            inputmode="numeric"
+            aria-label="Quantidade de ${escaparHTML(item.name)}"
+          >
+
+          <div>
+            <div
+              class="item-price"
+              id="p-${escaparHTML(item.id)}"
+            ></div>
+
+            <div
+              class="pin hidden"
+              id="pin-${escaparHTML(item.id)}"
+            >
+              <input
+                type="number"
+                min="0"
+                step="any"
+                inputmode="decimal"
+                data-pid="${escaparHTML(item.id)}"
+                aria-label="Preço de ${escaparHTML(item.name)}"
+              >
+            </div>
+          </div>
+        `;
+
+        $("item-list").appendChild(linha);
+      });
+
+      resetarQuantidades();
+    }
+
+    /* ATUALIZA QUANTIDADE E PREÇO */
+    $("item-list").addEventListener("input", (evento) => {
+      const campo = evento.target;
+
+      if (campo.dataset.id) {
+        state.qty[campo.dataset.id] = Math.max(
+          0,
+          parseInt(campo.value || "0", 10) || 0
+        );
+
+        renderizar();
+        return;
+      }
+
+      if (campo.dataset.pid) {
+        const chave = normalizar(state.parcName);
+
+        if (!state.pr[chave]) {
+          state.pr[chave] = {};
+        }
+
+        state.pr[chave][campo.dataset.pid] = Math.max(
+          0,
+          parseFloat(campo.value) || 0
+        );
+
+        salvarParcerias();
+        renderizar();
+      }
+    });
+
+    $("faccao").addEventListener("input", (evento) => {
+      state.faccao = evento.target.value.trim();
+      renderizar();
+    });
+
+    /* =========================================================
+       5. CONTROLE DAS ABAS
+    ========================================================= */
+
+    function mostrarTela(tela) {
+      const mostrarParcerias = tela === "parc";
+
+      $("view-parc").classList.toggle(
+        "hidden",
+        !mostrarParcerias
+      );
+
+      $("view-calc").classList.toggle(
+        "hidden",
+        mostrarParcerias
+      );
+
+      $("tab-calc").classList.toggle(
+        "active",
+        !mostrarParcerias
+      );
+
+      $("tab-parc").classList.toggle(
+        "active",
+        mostrarParcerias
+      );
+    }
+
+    $("tab-calc").addEventListener("click", () => {
+      state.mode = "normal";
+
+      montarItens(BASE);
+
+      $("head-normal").classList.remove("hidden");
+      $("head-parc").classList.add("hidden");
+
+      mostrarTela("calc");
+      renderizar();
+    });
+
+    $("tab-parc").addEventListener("click", () => {
+      state.mode = "normal";
+      mostrarTela("parc");
+    });
+
+    $("back").addEventListener("click", () => {
+      mostrarTela("parc");
+    });
+
+    /* =========================================================
+       6. ABRIR CALCULADORA DE UMA PARCERIA
+    ========================================================= */
+
+    function abrirParceria(nome) {
+      state.mode = "parceria";
+      state.parcName = nome;
+
+      const chave = normalizar(nome);
+      montarItens(TABELAS[chave] || BASE);
+
+      $("parc-name").textContent = nome;
+
+      $("head-normal").classList.add("hidden");
+      $("head-parc").classList.remove("hidden");
+
+      mostrarTela("calc");
+
+      $("tab-calc").classList.remove("active");
+      $("tab-parc").classList.add("active");
+
+      renderizar();
+    }
+
+    /* =========================================================
+       7. CARDS DAS PARCERIAS
+    ========================================================= */
+
+    $("cad-search").addEventListener("input", renderizarCards);
+
+    function renderizarCards() {
+      const termo = normalizar($("cad-search").value);
+
+      const lista = state.parcerias
+        .map((nome, indice) => ({ nome, indice }))
+        .filter((parceria) => {
+          return !termo ||
+            normalizar(parceria.nome).includes(termo);
+        });
+
+      const container = $("cards");
+
+      if (!state.parcerias.length) {
+        container.innerHTML = `
+          <div class="empty">
+            Nenhuma parceria cadastrada ainda.
+          </div>
+        `;
+        return;
+      }
+
+      if (!lista.length) {
+        container.innerHTML = `
+          <div class="empty">
+            Nenhuma parceria encontrada.
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = lista.map((parceria) => `
+        <button
+          class="pcard"
+          type="button"
+          data-open="${parceria.indice}"
+        >
+          <span class="nm">
+            ${escaparHTML(parceria.nome)}
+          </span>
+
+          <span class="sub">
+            Abrir calculadora →
+          </span>
+        </button>
+      `).join("");
+
+      container.querySelectorAll("[data-open]").forEach((card) => {
+        card.addEventListener("click", () => {
+          const indice = Number(card.dataset.open);
+          abrirParceria(state.parcerias[indice]);
+        });
+      });
+    }
+
+    /* =========================================================
+       8. CÁLCULO DOS VALORES
+    ========================================================= */
+
+    function obterPreco(item) {
+      if (state.mode !== "parceria") {
+        return item.normal;
+      }
+
+      const chave = normalizar(state.parcName);
+      const precoSalvo = state.pr[chave]?.[item.id];
+
+      return precoSalvo == null
+        ? item.parceria
+        : precoSalvo;
+    }
+
+    function calcular() {
+      const escolhidos = ITEMS.filter((item) => {
+        return state.qty[item.id] > 0;
+      });
+
+      const total = escolhidos.reduce((soma, item) => {
+        return soma + obterPreco(item) * state.qty[item.id];
+      }, 0);
+
+      return {
+        chosen: escolhidos,
+        total,
+        membro: total * 0.3,
+        painel: total * 0.7
+      };
+    }
+
+    /* =========================================================
+       9. DADOS DO COMPROVANTE
+    ========================================================= */
+
+    function gerarLinhasComprovante(calculo) {
+      const parceria = state.mode === "parceria";
+
+      const linhas = [
+        [
+          "Facção:",
+          (parceria ? state.parcName : state.faccao) || "—",
+          ""
+        ],
+        [
+          "Parceria:",
+          parceria ? "Sim" : "Não",
+          ""
+        ]
+      ];
+
+      linhas.push([
+        "Produtos:",
+        calculo.chosen.map((item) => {
+          return `${state.qty[item.id]}x ${item.name}`;
+        }).join(", "),
+        ""
+      ]);
+
+      linhas.push([
+        "Valor total:",
+        formatarBRL(calculo.total),
+        parceria ? "deposit" : ""
+      ]);
+
+      if (!parceria) {
+        linhas.push([
+          "Repasse produtos:",
+          `membro ${formatarBRL(calculo.membro)} · painel ${formatarBRL(calculo.painel)}`,
+          ""
+        ]);
+
+        linhas.push([
+          "Total membro / painel:",
+          `${formatarBRL(calculo.membro)} / ${formatarBRL(calculo.painel)}`,
+          "deposit"
+        ]);
+      }
+
+      return linhas;
+    }
+
+    /* =========================================================
+       10. ATUALIZAÇÃO DA INTERFACE
+    ========================================================= */
+
+    function renderizar() {
+      const parceria = state.mode === "parceria";
+
+      ITEMS.forEach((item) => {
+        const preco = obterPreco(item);
+        const precoTexto = $("p-" + item.id);
+        const campoPreco = $("pin-" + item.id);
+        const inputPreco = campoPreco.querySelector("input");
+
+        precoTexto.textContent = formatarBRLComEspaco(preco);
+        precoTexto.classList.toggle("hidden", parceria);
+
+        campoPreco.classList.toggle("hidden", !parceria);
+
+        if (
+          parceria &&
+          document.activeElement !== inputPreco
+        ) {
+          inputPreco.value = preco;
+        }
+      });
+
+      $("note").classList.toggle("hidden", parceria);
+
+      const calculo = calcular();
+
+      $("comm").classList.toggle(
+        "hidden",
+        !calculo.chosen.length || parceria
+      );
+
+      $("membro-val").textContent = formatarBRL(calculo.membro);
+      $("painel-val").textContent = formatarBRL(calculo.painel);
+
+      if (!calculo.chosen.length) {
+        $("rbody").innerHTML = `
+          <div class="empty">
+            Informe a quantidade de itens para gerar o comprovante.
+          </div>
+        `;
+
+        $("stamp").classList.remove("show");
+        $("rtime").textContent = "";
+        return;
+      }
+
+      $("rbody").innerHTML = gerarLinhasComprovante(calculo)
+        .map(([chave, valor, classe]) => `
+          <div class="rline ${classe}">
+            <span class="dot">●</span>
+            <span class="k">${escaparHTML(chave)}</span>
+            <span class="v">${escaparHTML(valor)}</span>
+          </div>
+        `)
+        .join("");
+
+      $("stamp").classList.add("show");
+
+      $("rtime").textContent = new Date().toLocaleString(
+        "pt-BR",
+        {
+          hour: "2-digit",
+          minute: "2-digit"
+        }
+      );
+    }
+
+    /* =========================================================
+       11. COPIAR COMPROVANTE
+    ========================================================= */
+
+    $("copy-btn").addEventListener("click", async () => {
+      const calculo = calcular();
+
+      if (!calculo.chosen.length) {
+        return;
+      }
+
+      const texto = gerarLinhasComprovante(calculo)
+        .map(([chave, valor]) => `● ${chave} ${valor}`)
+        .join("\n");
+
+      const botao = $("copy-btn");
+
+      function mostrarCopiado() {
+        botao.textContent = "Copiado ✓";
+        botao.classList.add("copied");
+
+        setTimeout(() => {
+          botao.textContent = "Copiar comprovante";
+          botao.classList.remove("copied");
+        }, 1600);
+      }
+
+      try {
+        if (navigator.clipboard?.writeText) {
+          await navigator.clipboard.writeText(texto);
+        } else {
+          const area = document.createElement("textarea");
+          area.value = texto;
+          area.style.position = "fixed";
+          area.style.opacity = "0";
+
+          document.body.appendChild(area);
+          area.select();
+          document.execCommand("copy");
+          area.remove();
+        }
+
+        mostrarCopiado();
+      } catch (erro) {
+        console.error("Não foi possível copiar o comprovante.", erro);
+        alert("Não foi possível copiar. Tente novamente.");
+      }
+    });
+
+    /* =========================================================
+       12. INICIALIZAÇÃO
+    ========================================================= */
+
+    montarItens(BASE);
+    carregarParcerias();
+    renderizar();
+  </script>
 </body>
 </html>
