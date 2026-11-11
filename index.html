@@ -221,53 +221,18 @@
 
       <div id="item-list"></div>
 
-      <div class="card-title" style="margin-top:22px">Desmanche &amp; Lavagem</div>
-
-      <div class="service-row head">
-        <div></div>
-        <div>Serviço</div>
-        <div>Valor recebido</div>
-        <div style="text-align:right">Cliente</div>
-        <div style="text-align:right">Membro</div>
-        <div style="text-align:right">Painel</div>
-      </div>
-
-      <div class="service-row">
-        <div class="badge">🚗</div>
-        <div class="item-name">Desmanche</div>
-        <div class="money-input-wrap">
-          <input class="money-input" type="number" min="0" value="0" id="input-desmanche" inputmode="numeric">
-        </div>
-        <div class="liberado cliente"><span class="lbl">Cliente</span><span id="out-desmanche-cliente">R$0</span></div>
-        <div class="liberado membro"><span class="lbl">Membro</span><span id="out-desmanche-membro">R$0</span></div>
-        <div class="liberado painel"><span class="lbl">Painel</span><span id="out-desmanche-painel">R$0</span></div>
-      </div>
-
-      <div class="service-row">
-        <div class="badge">💸</div>
-        <div class="item-name">Lavagem</div>
-        <div class="money-input-wrap">
-          <input class="money-input" type="number" min="0" value="0" id="input-lavagem" inputmode="numeric">
-        </div>
-        <div class="liberado cliente"><span class="lbl">Cliente</span><span id="out-lavagem-cliente">R$0</span></div>
-        <div class="liberado membro"><span class="lbl">Membro</span><span id="out-lavagem-membro">R$0</span></div>
-        <div class="liberado painel"><span class="lbl">Painel</span><span id="out-lavagem-painel">R$0</span></div>
-      </div>
-
       <div class="commission-total" id="commission-total-box" style="display:none">
         <div class="block membro">
-          <span>Total membro (produtos + desmanche + lavagem)</span>
+          <span>Total membro</span>
           <b id="membro-total-val">R$0</b>
         </div>
         <div class="block painel">
-          <span>Total painel (produtos + desmanche + lavagem)</span>
+          <span>Total painel</span>
           <b id="painel-total-val">R$0</b>
         </div>
       </div>
 
       <div class="rate-note">
-        <b>Desmanche</b> — repasse ao cliente: 80% com parceria ou 70% sem parceria. O restante (20% ou 30%) fica inteiro com o membro que atendeu — sem repasse ao painel.<br>
-        <b>Lavagem</b> — repasse ao cliente: 80% com parceria ou 70% sem parceria. Da comissão restante (20% ou 30%), metade fica com o membro e metade vai para o painel da facção — 10%/10% com parceria, 15%/15% sem parceria.<br>
         <b>Venda de produtos</b> — da venda, 30% fica com o membro que vendeu e 70% vai para o painel da facção. Os preços da tabela já variam com parceria.
       </div>
     </div>
@@ -304,8 +269,6 @@
     faccao: '',
     parceria: false,
     qty: Object.fromEntries(ITEMS.map(i => [i.id, 0])),
-    desmanche: 0,
-    lavagem: 0,
     parcerias: []
   };
 
@@ -466,51 +429,18 @@
     });
   }
 
-  document.getElementById('input-desmanche').addEventListener('input', (e) => {
-    state.desmanche = Math.max(0, parseFloat(e.target.value || '0') || 0);
-    render();
-  });
-  document.getElementById('input-lavagem').addEventListener('input', (e) => {
-    state.lavagem = Math.max(0, parseFloat(e.target.value || '0') || 0);
-    render();
-  });
-
   btnSim.addEventListener('click', () => { setParceriaUI(true); render(); });
   btnNao.addEventListener('click', () => { setParceriaUI(false); render(); });
 
   function unitPrice(item){ return state.parceria ? item.parceria : item.sem; }
 
-  // Desmanche / Lavagem: cliente 80%/70% (com/sem parceria).
-  // Lavagem: comissão da facção meio a meio entre membro e painel.
-  // Desmanche: comissão inteira com o membro.
-  // Produtos: 30% membro, 70% painel.
+  // Venda de produtos: 30% membro, 70% painel.
   function computeAll(){
-    const clienteRate = state.parceria ? 0.8 : 0.7;
-    const facRate = state.parceria ? 0.2 : 0.3;
-    const membroLavagemRate = facRate / 2;
-    const painelLavagemRate = facRate / 2;
-    const membroDesmancheRate = facRate;
-
     const chosen = ITEMS.filter(i => state.qty[i.id] > 0);
     const itemsTotal = chosen.reduce((sum, i) => sum + unitPrice(i) * state.qty[i.id], 0);
     const itemsMembro = itemsTotal * 0.30;
     const itemsPainel = itemsTotal * 0.70;
-
-    const desmancheCliente = state.desmanche * clienteRate;
-    const desmancheMembro = state.desmanche * membroDesmancheRate;
-    const desmanchePainel = 0;
-
-    const lavagemCliente = state.lavagem * clienteRate;
-    const lavagemMembro = state.lavagem * membroLavagemRate;
-    const lavagemPainel = state.lavagem * painelLavagemRate;
-
-    return {
-      chosen, itemsTotal, itemsMembro, itemsPainel,
-      desmancheCliente, desmancheMembro, desmanchePainel,
-      lavagemCliente, lavagemMembro, lavagemPainel,
-      membroTotal: itemsMembro + desmancheMembro + lavagemMembro,
-      painelTotal: itemsPainel + desmanchePainel + lavagemPainel
-    };
+    return { chosen, itemsTotal, itemsMembro, itemsPainel, membroTotal: itemsMembro, painelTotal: itemsPainel };
   }
 
   function buildLines(c){
@@ -525,8 +455,6 @@
       L.push(['Valor total:', fmtBRL(c.itemsTotal), 'total']);
       L.push(['Repasse produtos:', `membro ${fmtBRL(c.itemsMembro)} · painel ${fmtBRL(c.itemsPainel)}`, '']);
     }
-    if (state.desmanche > 0) L.push(['Desmanche:', `${fmtBRL(state.desmanche)} recebido — cliente ${fmtBRL(c.desmancheCliente)} · membro ${fmtBRL(c.desmancheMembro)}`, '']);
-    if (state.lavagem > 0) L.push(['Lavagem:', `${fmtBRL(state.lavagem)} recebido — cliente ${fmtBRL(c.lavagemCliente)} · membro ${fmtBRL(c.lavagemMembro)} · painel ${fmtBRL(c.lavagemPainel)}`, '']);
     if (c.membroTotal > 0 || c.painelTotal > 0) L.push(['Total membro / painel:', `${fmtBRL(c.membroTotal)} / ${fmtBRL(c.painelTotal)}`, 'deposit']);
     return L;
   }
@@ -537,13 +465,6 @@
     });
 
     const c = computeAll();
-
-    document.getElementById('out-desmanche-cliente').textContent = fmtBRL(c.desmancheCliente);
-    document.getElementById('out-desmanche-membro').textContent = fmtBRL(c.desmancheMembro);
-    document.getElementById('out-desmanche-painel').textContent = '—';
-    document.getElementById('out-lavagem-cliente').textContent = fmtBRL(c.lavagemCliente);
-    document.getElementById('out-lavagem-membro').textContent = fmtBRL(c.lavagemMembro);
-    document.getElementById('out-lavagem-painel').textContent = fmtBRL(c.lavagemPainel);
 
     const commBox = document.getElementById('commission-total-box');
     if (c.membroTotal > 0 || c.painelTotal > 0) {
@@ -556,10 +477,10 @@
 
     const body = document.getElementById('receipt-body');
     const stamp = document.getElementById('stamp');
-    const hasContent = c.chosen.length > 0 || state.desmanche > 0 || state.lavagem > 0;
+    const hasContent = c.chosen.length > 0;
 
     if (!hasContent) {
-      body.innerHTML = `<div class="empty-note">Informe a quantidade de itens ou um valor de desmanche/lavagem para gerar o comprovante.</div>`;
+      body.innerHTML = `<div class="empty-note">Informe a quantidade de itens para gerar o comprovante.</div>`;
       stamp.classList.remove('show');
       document.getElementById('receipt-time').textContent = '';
       return;
@@ -575,7 +496,7 @@
 
   document.getElementById('copy-btn').addEventListener('click', () => {
     const c = computeAll();
-    if (!(c.chosen.length > 0 || state.desmanche > 0 || state.lavagem > 0)) return;
+    if (!(c.chosen.length > 0)) return;
     const text = buildLines(c).map(([k, v]) => `● ${k} ${v}`).join('\n');
 
     navigator.clipboard.writeText(text).then(() => {
