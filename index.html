@@ -104,6 +104,7 @@ input::placeholder{color:#555}
       <div class="comm hidden" id="comm">
         <div><span>Total membro</span><b id="membro-val">R$0</b></div>
         <div><span>Total painel</span><b id="painel-val">R$0</b></div>
+        <div><span>Total geral</span><b id="total-val">R$0</b></div>
       </div>
       <div class="note" id="note"><b>Venda de produtos</b> — da venda, 30% fica com o membro que vendeu e 70% vai para o painel da facção.</div>
     </div>
@@ -231,7 +232,7 @@ function render(){
   $('note').classList.toggle('hidden',par);
   const c=compute();
   $('comm').classList.toggle('hidden',!c.chosen.length||par);
-  $('membro-val').textContent=brl(c.membro);$('painel-val').textContent=brl(c.painel);
+  $('membro-val').textContent=brl(c.membro);$('painel-val').textContent=brl(c.painel);$('total-val').textContent=brl(c.total);
   if(!c.chosen.length){
     $('rbody').innerHTML='<div class="empty">Informe a quantidade de itens para gerar o comprovante.</div>';
     $('stamp').classList.remove('show');$('rtime').textContent='';return;
